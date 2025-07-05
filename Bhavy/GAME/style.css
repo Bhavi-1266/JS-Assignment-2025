@@ -1,0 +1,94 @@
+body {
+    background: linear-gradient(to bottom, #87ceeb 0%, #f0e68c 100%);
+    font-family: 'Press Start 2P', 'Courier New', Courier, monospace;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.startingText {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: rgba(255,255,255,0.8);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    margin: 40px auto;
+    max-width: 400px;
+}
+
+.startingText h1 {
+    font-size: 2.2rem;
+    color: #e63946;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 0 #fff, 4px 4px 0 #000;
+}
+
+.startingText p {
+    font-size: 1.1rem;
+    color: #222;
+    margin-bottom: 20px;
+}
+
+#startButton {
+    font-family: inherit;
+    font-size: 1.1rem;
+    padding: 12px 32px;
+    background: #43aa8b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px #2d6a4f;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+#startButton:hover {
+    background: #2d6a4f;
+    transform: translateY(2px);
+}
+
+.game {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    position: fixed;
+    bottom: 40px;
+    left: 0;
+    width: 100vw;
+    height: 80px;
+    gap: 0;
+    margin: 0;
+    z-index: 2;
+}
+
+.block {
+    background: #f9c74f;
+    border: 4px solid #f9844a;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 4px #f3722c, 0 0 0 4px #fff inset;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #222;
+    margin: 0 2px;
+    transition: transform 0.1s;
+}
+
+#block1 { width: 60px; height: 40px; }
+#block2 { width: 80px; height: 50px; }
+#block3 { width: 55px; height: 60px; }
+#block4 { width: 70px; height: 45px; }
+#block5 { width: 90px; height: 55px; }
+#block6 { width: 65px; height: 50px; }
+#block7 { width: 75px; height: 40px; }
+#block8 { width: 60px; height: 60px; }
+#block9 { width: 85px; height: 48px; }
+
+.block:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px #f3722c;
+}
