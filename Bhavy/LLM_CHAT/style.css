@@ -17,6 +17,21 @@ html {
     text-align: center;
 }
 
+#ApiKey{
+    left:50%;
+    top:25%;
+    height: 2rem;
+    width:50%;
+    border-radius: 1rem;
+    background-color: #645f68;
+    color:#ffffff;
+    &::placeholder {
+        color: #bbbbbb;
+    }
+    position: absolute;
+
+    transform: translate(-50%, -50%);
+}
 .startingText {
     font-size: 2rem;
     font-weight: bold;
@@ -53,7 +68,9 @@ html {
     border-bottom-left-radius: 0.3125rem;
     flex:auto;
     box-sizing: border-box;
-    border: 0.0625rem solid #ccc;
+    border: 0.0625rem solid #131313;
+    background-color: #474444;
+    color: #ffffff;
 }
 
 .sendButton {
@@ -85,6 +102,17 @@ html {
     font-size: 1rem;
 }
 
+#clear{
+    background-color: #645f68;
+    position: absolute;
+    top: 62%;
+    left:84%;
+    transform: translate(-50%,-50%);
+    height: 2rem;
+    border-radius: 0.7rem;
+    border:2px #4b4949 solid;
+
+}
 .chats{
     width:80%;
     border-radius: 0.3125rem;

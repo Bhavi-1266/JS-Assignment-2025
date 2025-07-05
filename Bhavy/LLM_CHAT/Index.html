@@ -7,7 +7,9 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="Heading">Chat Bot</div>
+    <div class="Heading">AI Chat Bot</div>
+        ,<input  id="ApiKey" type="text" placeholder="Enter Your Api Key">
+
     <div  id="startingText" class ="startingText">What can I help you with</div>
     <div class ="inputBox">
         <div class="inputText">
@@ -15,17 +17,16 @@
         </div>
         <div class="modelSelector">
             <select class="modelSelector" name="model" id="model">
-                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                <option value="gpt-4">GPT-4</option>
-                <option value="gpt-3.5-turbo-16k">GPT-3.5 Turbo 16K</option>
-                <option value="gpt-3.5-turbo-sharp-16k">GPT-3.5 Turbo Sharp 16K</option>
-                <option value="gpt-j-6B">GPT-J 6B</option>
+                <option value="openrouter/cypher-alpha:free">Cypher Alpha</option>
+                <option value="google/gemma-2-9b-it:free">Gemma 2 9B</option>
+                <option value="qwen/qwen3-8b:free">qwen3-8b</option>
             </select>
         </div>
         <div class="sendButton">
             <button class="sendButton">Send</button>
         </div>
     </div>
+    <button id="clear">Clear</button>
     <div class="chats"></div>
     <script src="script.js"></script>
 </body>

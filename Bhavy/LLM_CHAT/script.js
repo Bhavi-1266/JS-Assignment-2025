@@ -1,9 +1,11 @@
 let inputButton = document.querySelector(".sendButton button");
 let inputText=document.querySelector(".inputText input");
 let ChatBox=document.querySelector(".chats");
-    
+let clear = document.querySelector("#clear");    
 let localStorageKey = "chatHistory";
 let chatHistory = JSON.parse(localStorage.getItem(localStorageKey) || "[]");
+
+
 
 if (chatHistory.length > 0) {
     chatHistory.forEach(chat => {
@@ -24,15 +26,39 @@ class ChatMessage {
     }
 }
 
-async function aiFetch(prompt, model) {
-    // let response = await fetch();
+async function aiFetch(prompt, model, key) {
+    let response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + key,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            model: model,
+            messages: [
+                {
+                    role: 'user',
+                    content: prompt,
+                },
+            ],
+        }),
+    });
 
-    // let finalResponse = await response.json();
-    // return finalResponse;
-    return ;
+    let data = await response.json();
+    if (!response.ok) {
+        console.error('API Error:', data);
+        throw new Error(data.error?.message || ` Failed to fetch AI response`);
+    }
+    return data.choices[0].message.content;
 }
 
 inputButton.addEventListener("click", () => {
+    let apiKey = document.querySelector("#ApiKey").value;
+    if(apiKey === ""){
+        document.querySelector("#ApiKey").setAttribute("placeholder", "Please enter your API key");
+        alert("API KEY NOT FOUND");
+        return;
+    }
     if(inputText.value === ""){
         inputText.setAttribute("placeholder", "Please enter a message");
         return;
@@ -56,7 +82,8 @@ inputButton.addEventListener("click", () => {
         let aiResponse = document.createElement("div");
         aiResponse.setAttribute("class", "chat");
         aiResponse.style.justifyContent = "flex-start";
-        let response = aiFetch(prompt, model);
+        aiResponse.style.backgroundColor = "#145f68";
+        let response = aiFetch(prompt, model, apiKey);
         response.then((data) => {
             aiResponse.textContent = data;
             aichat.text = data;
@@ -66,14 +93,15 @@ inputButton.addEventListener("click", () => {
             
             inputText.value = "";
         }).catch((error) => {
-            aiResponse.textContent = "Error: " + error.message;
-            aichat.text = "Error: " + error.message;
+            aiResponse.textContent = "Error:sorry";
+            aichat.text = "Error: sorry";
             
             chatHistory.push(aichat);
             localStorage.setItem(localStorageKey, JSON.stringify(chatHistory));
             
             inputText.value = "";
         });
+        aiResponse.innerText ="Thinking....";
         ChatBox.prepend(aiResponse);
     }
 });
@@ -83,3 +111,12 @@ inputText.addEventListener("keypress", (e) => {
         inputButton.click();
     }
 });
+
+
+clear.addEventListener("click", () => {
+    const chatElements = document.querySelectorAll('.chat');
+    chatElements.forEach(element => element.remove());
+    chatHistory = [];
+    localStorage.setItem(localStorageKey, JSON.stringify([]));
+});
+
