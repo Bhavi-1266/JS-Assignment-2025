@@ -1,127 +1,75 @@
-// Game variables
-let gameStarted = false;
-let player = {
-    x: 50,
-    y: 300,
-    width: 30,
-    height: 40,
-    velocityY: 0,
-    isJumping: false
-};
+let blocks=document.querySelectorAll(".block");
 
-// Get DOM elements
-const gameContainer = document.querySelector('.game');
-const blocks = document.querySelectorAll('.block');
+let startButton = document.querySelector(".startButton");
 
-// Initialize game
-function initGame() {
-    gameStarted = true;
-    console.log('Game started!');
-    
-    // Add player element
-    createPlayer();
-    
-    // Start game loop
-    gameLoop();
-}
+let Player = document.createElement("div");
+Player.style.width = "0.6rem";
+Player.style.height = "0.6rem";
+Player.style.backgroundColor = "black";
+Player.style.position = "absolute";
+Player.style.left = "60px";
+Player.style.top = "300px";
 
-// Create player element
-function createPlayer() {
-    const playerElement = document.createElement('div');
-    playerElement.id = 'player';
-    playerElement.style.cssText = `
-        position: absolute;
-        width: ${player.width}px;
-        height: ${player.height}px;
-        background: #ff6b6b;
-        border: 2px solid #c44569;
-        border-radius: 5px;
-        left: ${player.x}px;
-        top: ${player.y}px;
-        z-index: 10;
-    `;
-    document.body.appendChild(playerElement);
-}
+document.body.appendChild(Player);
 
-// Game loop
-function gameLoop() {
-    if (!gameStarted) return;
-    
-    updatePlayer();
-    checkCollisions();
-    
-    requestAnimationFrame(gameLoop);
-}
+let xSpeed = 0;
+let Yspeed = 0;
+let g = 0.05;
 
-// Update player position
-function updatePlayer() {
-    const playerElement = document.getElementById('player');
-    if (!playerElement) return;
-    
-    // Apply gravity
-    player.velocityY += 0.8;
-    player.y += player.velocityY;
-    
-    // Update player position
-    playerElement.style.top = player.y + 'px';
-    playerElement.style.left = player.x + 'px';
-}
+let Yacc = g;
+let Xacc = 0;
 
-// Check collisions with blocks
-function checkCollisions() {
-    blocks.forEach(block => {
-        const blockRect = block.getBoundingClientRect();
-        const playerRect = document.getElementById('player')?.getBoundingClientRect();
+let playerRect = Player.getBoundingClientRect();
+let isOnGround = false;
+let x = 60;
+let y = 300;
+
+let blockTops = [];
+
+blocks.forEach(block => {
+    let rect = block.getBoundingClientRect();
+    blockTops.push(rect.top);
+});
+
+function falling() {
+    Yspeed += Yacc;
+    y += Yspeed;
+
+    Player.style.top = y + 'px';
+
+    if (y + Player.offsetHeight >= window.innerHeight) {
+        y = window.innerHeight - Player.offsetHeight;
+        Yspeed = 0;
+        Player.style.top = y + 'px';
+    }
+
+    // Check collision with block tops
+    blocks.forEach((block, index) => {
+        let rect = block.getBoundingClientRect();
+        let playerBottom = y + Player.offsetHeight;
+        let playerLeft = x;
+        let playerRight = x + Player.offsetWidth;
         
-        if (playerRect && isColliding(playerRect, blockRect)) {
-            // Land on block
-            player.y = blockRect.top - player.height;
-            player.velocityY = 0;
-            player.isJumping = false;
+        // Check if player is above the block and within its horizontal bounds
+        if (playerBottom >= rect.top && playerBottom <= rect.top + 10 && 
+            playerRight > rect.left && playerLeft < rect.right) {
+            if (Yspeed > 0) { // Only if falling
+                y = rect.top - Player.offsetHeight;
+                Yspeed = 0;
+                Player.style.top = y + 'px';
+                isOnGround = true;
+            }
         }
     });
+    
+
+    requestAnimationFrame(falling);
 }
 
-// Collision detection
-function isColliding(rect1, rect2) {
-    return rect1.left < rect2.right &&
-           rect1.right > rect2.left &&
-           rect1.top < rect2.bottom &&
-           rect1.bottom > rect2.top;
-}
+falling();
 
-// Event listeners
-document.addEventListener('keydown', (e) => {
-    if (!gameStarted) {
-        initGame();
-        return;
-    }
-    
-    const playerElement = document.getElementById('player');
-    if (!playerElement) return;
-    
-    switch(e.key) {
-        case 'ArrowLeft':
-            player.x -= 5;
-            break;
-        case 'ArrowRight':
-            player.x += 5;
-            break;
-        case ' ':
-        case 'ArrowUp':
-            if (!player.isJumping) {
-                player.velocityY = -15;
-                player.isJumping = true;
-            }
-            break;
-    }
+
+startButton.addEventListener("click", () => {
+    alert("VDFF ");
+
 });
-
-// Click to start game
-document.addEventListener('click', () => {
-    if (!gameStarted) {
-        initGame();
-    }
-});
-
-console.log('Game script loaded!'); 
