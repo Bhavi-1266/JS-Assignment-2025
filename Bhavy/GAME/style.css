@@ -1,9 +1,8 @@
 body {
-    background: linear-gradient(to bottom, #87ceeb 0%, #f0e68c 100%);
+    background: linear-gradient(to bottom, #ffe602 0%, #f0e68c 100%);
     font-family: 'Press Start 2P', 'Courier New', Courier, monospace;
     margin: 0;
     padding: 0;
-    min-height: 100vh;
 
 }
 
@@ -58,7 +57,6 @@ html{
     gap: 0;
     margin: 0;
     z-index: 2;
-    border: 0.02rem black solid;
 }
 
 .block {
