@@ -88,16 +88,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function jump(holdTime = 0) {
         if (isOnGround > 0) {
-            if (holdTime >= 300) {
-                ySpeed = -3;      // High jump
-                xSpeed = 1.5;
-            } else if (holdTime >= 150) {
-                ySpeed = -2.2;    // Medium jump
-                xSpeed = 1.2;
-            } else {
-                ySpeed = -1.5;    // Low jump
-                xSpeed = 0.8;
-            }
+            ySpeed = -1.5 - (holdTime / 200);
+            xSpeed = 0.8 + (holdTime / 400);
             isOnGround--;
         }
     }
