@@ -32,16 +32,17 @@ uniqueTags.forEach(tag => {
 let dataCategories = [{"category":"toys","count":21431},{"category":"sports","count":21306},{"category":"home","count":21026},{"category":"beauty","count":21297},{"category":"electronics","count":21407},{"category":"food","count":21359},{"category":"fashion","count":21030},{"category":"pet","count":21144}];
 const categoriesContainer = document.querySelector('#category');
 
-dataItems.forEach((item) => {
+dataCategories.forEach((item) => {
   categoriesContainer.innerHTML += `<option value="${item.category}">${item.category}</option>`;
 });
 
 
 tags.addEventListener('change', function() {
   let tagSelected = tags.value;
+  let categorySelected = categoriesContainer.value;
   itemsContainer.innerHTML = '';
   dataItems.forEach((item) => {
-    if (item.tags.includes(tagSelected)) {
+    if (item.tags.includes(tagSelected) && item.category === categorySelected) {
       const container = document.createElement('div');
       container.className = 'elements';
       container.innerHTML = `
@@ -59,9 +60,10 @@ tags.addEventListener('change', function() {
 
 categoriesContainer.addEventListener('change', function() {
   let categorySelected = categoriesContainer.value;
+  let tagSelected = tags.value;
   itemsContainer.innerHTML = '';
   dataItems.forEach((item) => {
-    if (item.category === categorySelected) {
+    if (item.category === categorySelected && item.tags.includes(tagSelected)) {
       const container = document.createElement('div');
       container.className = 'elements';
       container.innerHTML = `
