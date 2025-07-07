@@ -45,7 +45,27 @@ tags.addEventListener('change', function() {
       const container = document.createElement('div');
       container.className = 'elements';
       container.innerHTML = `
-        <div class="image"><img src="" alt="Image"></div>
+        <div class="image"><img src="https://picsum.photos/id/${Math.floor(Math.random() * 10)}/200/300"  alt="Image"></div>
+        <div class="name">${item.name}</div>
+        <div class="description">description: ${item.description}</div>
+        <div class="price">price:${item.price}</div>
+        <div class="categoryInItem">category:${item.category}</div>
+      `;
+      itemsContainer.appendChild(container);
+    }
+  });
+});
+
+
+categoriesContainer.addEventListener('change', function() {
+  let categorySelected = categoriesContainer.value;
+  itemsContainer.innerHTML = '';
+  dataItems.forEach((item) => {
+    if (item.category === categorySelected) {
+      const container = document.createElement('div');
+      container.className = 'elements';
+      container.innerHTML = `
+        <div class="image"><img src="https://picsum.photos/id/${Math.floor(Math.random() * 10)}/200/300"  alt="Image"></div>
         <div class="name">${item.name}</div>
         <div class="description">description: ${item.description}</div>
         <div class="price">price:${item.price}</div>
