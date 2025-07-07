@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    let blocks = document.querySelectorAll('.block');
+    let blocks = document.querySelectorAll('.block, .cloud-block');
     let startingText = document.querySelector('.startingText');
     let startButton = document.querySelector('#startButton');
     let game = document.querySelector('.game');
@@ -49,13 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (volume > loudJumpThreshold && now - lastJumpTime > jumpCooldown) {
             // Determine jump level based on volume
             if (isOnGround > 0) {
-                if (volume > loudJumpThreshold * 2) {
-                    jump(300);
-                } else if (volume > loudJumpThreshold * 1.5) {
-                    jump(150);
-                } else {
-                    jump(50);
-                }
+                jump(volume**2);
             } else if (isOnGround === 1 && !doubleJumpUsed) {
                 doubleJump();
                 doubleJumpUsed = true;
@@ -74,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     Player.style.left = '60px';
     Player.style.top = '300px';
     Player.style.borderRadius = '50%';
-    Player.style.zIndex = '1000';
+    Player.style.zIndex = '2';
     document.body.appendChild(Player);
 
     let xSpeed = 0;
@@ -142,7 +136,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (y + Player.offsetHeight >= window.innerHeight) {
             y = window.innerHeight - Player.offsetHeight;
             ySpeed = 0;
+            xSpeed=0;
             Player.style.top = y + 'px';
+            if (h1) h1.innerText = 'HAHAHA YOU LOOSE';
+        }
+
+        if (x + Player.offsetWidth >= window.innerWidth) {
+            x = window.innerWidth - Player.offsetWidth;
+            ySpeed = 0;
+            Player.style.left = x + 'px';
             if (h1) h1.innerText = 'HAHAHA YOU LOOSE';
         }
 
