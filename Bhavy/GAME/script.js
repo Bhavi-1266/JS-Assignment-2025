@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let game = document.querySelector('.game');
     let h1 = document.querySelector('h1');
 
-    // --- Loudness Detection Setup ---
+    //  Loudness setup
     let audioContext, analyser, microphone, dataArray;
-    let loudJumpThreshold = 5; // Adjust this value for sensitivity (higher = needs louder sound)
+    let loudJumpThreshold = 5; 
     let lastJumpTime = 0;
-    let jumpCooldown = 10; // ms
+    let jumpCooldown = 10; 
 
     let doubleJumpUsed = false;
 
@@ -89,9 +89,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function doubleJump() {
-        // Only allow if in air (isOnGround == 1) and not already used
         if (isOnGround === 1 && !doubleJumpUsed) {
-            ySpeed = -2.7; // Good speed for a proper double jump
+            ySpeed = -2.7; 
             xSpeed = 1.3;
             isOnGround--;
             doubleJumpUsed = true;
@@ -105,7 +104,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!key.repeat && isOnGround > 0) {
                 keyDownTime = Date.now();
             }
-            // If in air and double jump not used (isOnGround == 1), trigger double jump
             else if (isOnGround === 1 && !doubleJumpUsed) {
                 doubleJump();
             }
@@ -170,9 +168,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (xSpeed>0){
                     xSpeed=xSpeed/1.043;
                 }
-                if(index===8){
+                if(index===18){
                     if (h1) h1.innerText = 'YOU WONNNNN';
                 }
+            }
+            //botton colison
+    
+            let playerTop = y;
+            if (
+                playerTop <= rect.bottom &&
+                playerTop >= rect.bottom - 10 &&
+                playerRight > rect.left &&
+                playerLeft < rect.right
+            ) {
+                ySpeed = -ySpeed * 0.1; 
             }
             // Side collision 
             if (

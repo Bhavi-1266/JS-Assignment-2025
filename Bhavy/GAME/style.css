@@ -111,20 +111,17 @@ html {
 }
 
 .cloud-block {
-    background: #e0f7fa;
-    border: 4px solid #b2ebf2;
-    border-radius: 16px 16px 0 0;
-    box-shadow: 0 4px #b2ebf2, 0 0 0 4px #fff inset;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #4dd0e1;
-    margin: 0 2px;
-    transition: transform 0.1s;
+    background: linear-gradient(135deg, #e0f7fa 60%, #b2ebf2 100%);
+    border-radius: 30px 30px 40px 40px;
+    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.08), 0 0 0 2px #b2ebf2 inset;
+    border: 2px solid #b2ebf2;
+    opacity: 0.92;
+    position: absolute;
+    z-index: 1;
+    display: block;
 }
 
 .cloud-block.positioned {
-    position: absolute;
+    /* For inline style override, but ensures .cloud-block is always above background */
+    z-index: 3;
 }
