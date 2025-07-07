@@ -122,6 +122,5 @@ html {
 }
 
 .cloud-block.positioned {
-    /* For inline style override, but ensures .cloud-block is always above background */
     z-index: 3;
 }

@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function detectLoudness() {
         analyser.getByteTimeDomainData(dataArray);
-        // Calculate root mean square (RMS) volume
         let sum = 0;
         for (let i = 0; i < dataArray.length; i++) {
             let val = (dataArray[i] - 128) / 128;
@@ -44,10 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let rms = Math.sqrt(sum / dataArray.length);
         let volume = rms * 100;
 
-        // If loud enough and not in cooldown, trigger jump
         let now = Date.now();
         if (volume > loudJumpThreshold && now - lastJumpTime > jumpCooldown) {
-            // Determine jump level based on volume
             if (isOnGround > 0) {
                 jump(volume**2);
             } else if (isOnGround === 1 && !doubleJumpUsed) {
