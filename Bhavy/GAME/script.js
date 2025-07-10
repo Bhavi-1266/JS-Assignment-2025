@@ -1,9 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
-    let blocks = document.querySelectorAll('.block, .cloud-block');
+    let blocks = document.querySelectorAll('.block');
+    let cloudBlocks = document.querySelectorAll('.cloudBlock');
     let startingText = document.querySelector('.startingText');
     let startButton = document.querySelector('#startButton');
     let game = document.querySelector('.game');
     let h1 = document.querySelector('h1');
+
+    
+    let cameraX=0;
+    let cameraSpeed=0.3;
+    let cameraAcc=0.001;
 
     //  Loudness setup
     let audioContext, analyser, microphone, dataArray;
@@ -79,11 +85,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let y = 300;
 
     function jump(holdTime = 0) {
+        if (holdTime > 2000) {
+            holdTime = 2000; t
+        }
         if (isOnGround > 0) {
             ySpeed = -1.5 - (holdTime / 200);
             xSpeed = 0.8 + (holdTime / 400);
             isOnGround--;
         }
+
     }
 
     function doubleJump() {
@@ -139,10 +149,66 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (x + Player.offsetWidth >= window.innerWidth) {
             x = window.innerWidth - Player.offsetWidth;
-            ySpeed = 0;
+            xSpeed = -xSpeed * 1.1; // Bounce back 
             Player.style.left = x + 'px';
-            if (h1) h1.innerText = 'HAHAHA YOU LOOSE';
+            
         }
+
+        cloudBlocks.forEach((block, index) => {
+            let rect = block.getBoundingClientRect();
+            let playerBottom = y + Player.offsetHeight;
+            let playerLeft = x;
+            let playerRight = x + Player.offsetWidth;
+            //above colison
+            if (
+                playerBottom >= rect.top &&
+                playerBottom <= rect.top + 10 &&
+                playerRight > rect.left &&
+                playerLeft < rect.right
+            ) {
+                if (ySpeed > 0) {
+                    y = rect.top - Player.offsetHeight;
+                    ySpeed = 0;
+                    Player.style.top = y + 'px';
+                    isOnGround = 2;
+                    doubleJumpUsed = false; 
+                }
+                if (xSpeed>0){
+                    xSpeed=xSpeed/1.043;
+                }
+                if(index===18){
+                    if (h1) h1.innerText = 'YOU WONNNNN';
+                }
+            }
+            //botton colison
+    
+            let playerTop = y;
+            if (
+                playerTop <= rect.bottom &&
+                playerTop >= rect.bottom - 10 &&
+                playerRight > rect.left &&
+                playerLeft < rect.right
+            ) {
+                ySpeed = -ySpeed * 0.1; 
+            }
+            // Side collision 
+            if (
+                playerRight >= rect.left &&
+                playerLeft <= rect.right &&
+                y + Player.offsetHeight > rect.top &&
+                y < rect.bottom
+            ) {
+                if (xSpeed > 0) {
+                    x = rect.left - Player.offsetWidth;
+                    xSpeed = 0;
+                    Player.style.left = x + 'px';
+                } else if (xSpeed < 0) {
+                    x = rect.right;
+                    xSpeed = 0;
+                    Player.style.left = x + 'px';
+                }
+            }
+        });
 
         blocks.forEach((block, index) => {
             let rect = block.getBoundingClientRect();
@@ -161,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ySpeed = 0;
                     Player.style.top = y + 'px';
                     isOnGround = 2;
-                    doubleJumpUsed = false; // Reset double jump on landing
+                    doubleJumpUsed = false; 
                 }
                 if (xSpeed>0){
                     xSpeed=xSpeed/1.043;
@@ -202,8 +268,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
 
+    function getLastBlockX() {
+    const lastBlock = document.querySelectorAll('.block');
+    if (lastBlock.length === 0) return 0; 
+    const lastBlockRect = lastBlock[lastBlock.length - 1].getBoundingClientRect();
+    return lastBlockRect.right + cameraX; 
+}
+
+
+
+    function cameraMoving() {
+        cameraX += cameraSpeed;
+        
+        game.style.transform = `translateX(${-cameraX}px)`;
+    }
+
+    function generateBlocks() {
+        const lastBlockX = getLastBlockX();
+        const spawnThreshold = window.innerWidth * 1.2; 
+
+        if (cameraX + spawnThreshold > lastBlockX) {
+            const block = document.createElement('div');
+            block.className = 'block';
+            block.style.width = `${Math.random() * 50 + 50}px`;
+            block.style.height = `${Math.random() * 200 + 20}px`;
+            game.appendChild(block);
+            blocks = document.querySelectorAll('.block');
+        }
+    }
+
+    // function deleteBlocks() {
+    //     blocks.forEach((block) => {
+    //         const rect = block.getBoundingClientRect();
+    //         if (rect.right < 0 || rect.left > window.innerWidth) {
+    //             block.remove();
+    //         }
+    //     });
+    // }
+
     function gameLoop(){
+        cameraMoving();
         moving();
+        generateBlocks();
+        // deleteBlocks();
         requestAnimationFrame(gameLoop);
     }
 
@@ -211,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
         startButton.addEventListener('click', () => {
             startButton.blur();
             if(startButton.innerText!="Reset"){
-                console.log('Button clicked!'); // Debug log
+                console.log('Button clicked!'); 
                 startButton.innerText="Reset";
                 detectLoudness();
                 gameLoop();
@@ -219,6 +326,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (startButton.innerText === "Reset") {
                 Player.style.left = '60px';
                 Player.style.top = '300px';
+                cameraX = 0;
+                game.style.transform = 'translateX(0px)';
                 x = 60;
                 y = 300;
                 xSpeed = 0;
