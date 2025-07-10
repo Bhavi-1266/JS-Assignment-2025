@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    setupAudio();
     function detectLoudness() {
         analyser.getByteTimeDomainData(dataArray);
         let sum = 0;
@@ -199,7 +200,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        requestAnimationFrame(moving);
+    }
+
+    function gameLoop(){
+        moving();
+        requestAnimationFrame(gameLoop);
     }
 
     if (startButton) {
@@ -208,8 +213,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if(startButton.innerText!="Reset"){
                 console.log('Button clicked!'); // Debug log
                 startButton.innerText="Reset";
-                setupAudio();
-                moving();
+                detectLoudness();
+                gameLoop();
             }
             if (startButton.innerText === "Reset") {
                 Player.style.left = '60px';
