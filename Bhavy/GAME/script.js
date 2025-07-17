@@ -269,12 +269,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getLastBlockX() {
-    const lastBlock = document.querySelectorAll('.block');
-    if (lastBlock.length === 0) return 0; 
-    const lastBlockRect = lastBlock[lastBlock.length - 1].getBoundingClientRect();
-    return lastBlockRect.right + cameraX; 
-}
-
+        const lastBlock = document.querySelectorAll('.block');
+        if (lastBlock.length === 0) return 0; 
+        const lastBlockRect = lastBlock[lastBlock.length - 1].getBoundingClientRect();
+        return lastBlockRect.right + cameraX; 
+    }
 
 
     function cameraMoving() {
@@ -320,7 +319,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if(startButton.innerText!="Reset"){
                 console.log('Button clicked!'); 
                 startButton.innerText="Reset";
-                detectLoudness();
+                if (analyser) {
+                    detectLoudness();
+                }
                 gameLoop();
             }
             if (startButton.innerText === "Reset") {
