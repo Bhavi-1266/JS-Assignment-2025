@@ -112,3 +112,27 @@ html {
     color: #606c38;
     margin-top: 0.5rem;
 }
+
+
+.pages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.page {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: #a3b18a;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0.5rem;
+    cursor: pointer;
+}
+.page.selected {
+    background-color: #648159;
+}

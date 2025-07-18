@@ -40,7 +40,8 @@ async function aiFetch(prompt, model, key) {
                     role: 'user',
                     content: prompt,
                 },
-            ],
+            ],  
+             stream: true,
         }),
     });
 
