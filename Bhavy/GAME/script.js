@@ -6,10 +6,18 @@ document.addEventListener('DOMContentLoaded', function() {
     let game = document.querySelector('.game');
     let h1 = document.querySelector('h1');
 
+
+    //coins stuff
+    let coinCollected =0;
+    let Highscore=0;
+
     
     let cameraX=0;
     let cameraSpeed=0.3;
     let cameraAcc=0.001;
+
+    let CoinProbability = 0.1; // 10% chance to spawn a coin
+    let AirCoinProbability = 0.05; // 5% chance to spawn an air coin
 
     //  Loudness setup
     let audioContext, analyser, microphone, dataArray;
@@ -18,6 +26,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let jumpCooldown = 10; 
 
     let doubleJumpUsed = false;
+
+    let score = 0;
+
+   
+
+    // For demo: Uncomment to test score increment every 2 seconds
+    // setInterval(collectCoin, 2000);
 
     function setupAudio() {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -266,6 +281,34 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        // Coin collection logic
+        let coinElements = document.querySelectorAll('.coin');
+        coinElements.forEach((coin, idx) => {
+            // Only check visible coins (not already collected)
+            if (coin.style.visibility === "hidden") return;
+
+            let coinRect = coin.getBoundingClientRect();
+            let playerRect = Player.getBoundingClientRect();
+
+            // Simple AABB collision detection
+            if (
+                playerRect.right > coinRect.left &&
+                playerRect.left < coinRect.right &&
+                playerRect.bottom > coinRect.top &&
+                playerRect.top < coinRect.bottom
+            ) {
+                // Collect the coin
+                coin.style.visibility = "hidden";
+                coinCollected++;
+                score += 1;
+                    const scoreDiv = document.getElementById('score');
+                    if (scoreDiv) {
+                        scoreDiv.textContent = `Score: ${score}`;
+                    }
+                // e.g. document.getElementById('score').innerText = coinCollected;
+            }
+        });
+
     }
 
     function getLastBlockX() {
@@ -285,13 +328,20 @@ document.addEventListener('DOMContentLoaded', function() {
     function generateBlocks() {
         const lastBlockX = getLastBlockX();
         const spawnThreshold = window.innerWidth * 1.2; 
-
+        
         if (cameraX + spawnThreshold > lastBlockX) {
             const block = document.createElement('div');
             block.className = 'block';
             block.style.width = `${Math.random() * 50 + 50}px`;
             block.style.height = `${Math.random() * 200 + 20}px`;
-            game.appendChild(block);
+            const blockHolder = document.createElement('div');
+            blockHolder.className = 'blockHolder';
+
+            const Coin = document.createElement('div');
+            Coin.className=`coin`;
+            blockHolder.appendChild(Coin);
+            blockHolder.appendChild(block);
+            game.appendChild(blockHolder);
             blocks = document.querySelectorAll('.block');
         }
     }
