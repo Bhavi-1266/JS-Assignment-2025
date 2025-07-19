@@ -336,10 +336,13 @@ document.addEventListener('DOMContentLoaded', function() {
             block.style.height = `${Math.random() * 200 + 20}px`;
             const blockHolder = document.createElement('div');
             blockHolder.className = 'blockHolder';
-
-            const Coin = document.createElement('div');
-            Coin.className=`coin`;
-            blockHolder.appendChild(Coin);
+            
+            // Add a coin with a certain probability (e.g., 40%)
+            if (Math.random() < 0.4) {
+                const Coin = document.createElement('div');
+                Coin.className = `coin`;
+                blockHolder.appendChild(Coin);
+            }
             blockHolder.appendChild(block);
             game.appendChild(blockHolder);
             blocks = document.querySelectorAll('.block');

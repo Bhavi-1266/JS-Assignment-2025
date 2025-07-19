@@ -17,6 +17,24 @@ html {
     text-align: center;
 }
 
+pre {
+    background: #f6f8fa;
+    padding: 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+code {
+    font-family: "Courier New", monospace;
+    background: #f6f8fa;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+blockquote {
+    border-left: 3px solid #ddd;
+    padding-left: 12px;
+    color: #666;
+}
+
 #ApiKey{
     left:50%;
     top:25%;

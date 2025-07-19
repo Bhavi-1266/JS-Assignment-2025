@@ -6,6 +6,35 @@ let localStorageKey = "chatHistory";
 let chatHistory = JSON.parse(localStorage.getItem(localStorageKey) || "[]");
 
 
+function formatMarkdown(text) {
+    text = text.replace(/\n/g, '<br>'); 
+
+    text = text.replace(/```(\w*)\n([\s\S]*?)\n```/g, 
+        '<pre class="code-block"><code class="$1">$2</code></pre>');
+
+    text = text.replace(/`([^`]+?)`/g, '<code class="inline-code">$1</code>');
+
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    text = text.replace(/(\*|_)(.*?)\1/g, '<em>$2</em>');
+
+    text = text.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+    text = text.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+    text = text.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+
+    text = text.replace(/^(\d+\.|-)\s(.*$)/gm, '<li>$2</li>');
+    text = text.replace(/^(<li>.*<\/li>)+/gm, '<ul>$&</ul>');
+
+    text = text.replace(/^>\s(.*$)/gm, '<blockquote>$1</blockquote>');
+
+    text = text.replace(/^(\*\*\*|---)$/gm, '<hr>');
+
+    text = text.replace(/(<br>\s*){2,}/g, '</p><p>');
+    text = '<p>' + text + '</p>'; 
+
+    return text;
+}
+
 
 if (chatHistory.length > 0) {
     chatHistory.forEach(chat => {
@@ -41,7 +70,6 @@ async function aiFetch(prompt, model, key) {
                     content: prompt,
                 },
             ],  
-             stream: true,
         }),
     });
 
@@ -50,6 +78,10 @@ async function aiFetch(prompt, model, key) {
         console.error('API Error:', data);
         throw new Error(data.error?.message || ` Failed to fetch AI response`);
     }
+
+    let message = data.choices[0].message.content;
+    message =  formatMarkdown(message);
+
     return data.choices[0].message.content;
 }
 
@@ -86,7 +118,7 @@ inputButton.addEventListener("click", () => {
         aiResponse.style.backgroundColor = "#145f68";
         let response = aiFetch(prompt, model, apiKey);
         response.then((data) => {
-            aiResponse.textContent = data;
+            aiResponse.innerHTML = data;
             aichat.text = data;
             
             chatHistory.push(aichat);
