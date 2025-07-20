@@ -11,6 +11,23 @@ document.addEventListener('DOMContentLoaded', function() {
     let coinCollected =0;
     let Highscore=0;
 
+    if (localStorage.getItem('gameHighScore')) {
+        Highscore = parseInt(localStorage.getItem('gameHighScore'), 10) || 0;
+        const highScoreDiv = document.getElementById("highScore");
+        if (highScoreDiv) {
+            highScoreDiv.textContent = `High Score : ${Highscore}`;
+        }
+    }
+
+    function updateHighScore(newScore) {
+        Highscore = newScore;
+        localStorage.setItem('gameHighScore', Highscore);
+        const highScoreDiv = document.getElementById("highScore");
+        if (highScoreDiv) {
+            highScoreDiv.textContent = `High Score : ${Highscore}`;
+        }
+    }
+
     
     let cameraX=0;
     let cameraSpeed=0.3;
@@ -163,9 +180,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (x + Player.offsetWidth >= window.innerWidth) {
-            x = window.innerWidth - Player.offsetWidth;
-            xSpeed = -xSpeed * 1.1; // Bounce back 
-            Player.style.left = x + 'px';
+            // x = window.innerWidth - Player.offsetWidth;
+             // Bounce back 
+            
+        // If player crosses the right boundary, wrap to left edge with same speed and height
+        x = 0;
+        Player.style.left = x + 'px';
+          
             
         }
 
@@ -301,10 +322,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 coin.style.visibility = "hidden";
                 coinCollected++;
                 score += 1;
-                    const scoreDiv = document.getElementById('score');
-                    if (scoreDiv) {
-                        scoreDiv.textContent = `Score: ${score}`;
+                const scoreDiv = document.getElementById('score');
+                if (scoreDiv) {
+                    scoreDiv.textContent = `Score: ${score}`;
+                    if (score > Highscore) {
+                        Highscore = score;
+                        const highScoreDiv = document.getElementById("highScore");
+                        if (highScoreDiv) {
+                            highScoreDiv.textContent = `High Score : ${Highscore}`;
+                            updateHighScore(score);
+                        }
                     }
+                }
                 // e.g. document.getElementById('score').innerText = coinCollected;
             }
         });
