@@ -213,8 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (xSpeed>0){
                     xSpeed=xSpeed/1.043;
                 }
-                if(index===18){
-                    if (h1) h1.innerText = 'YOU WONNNNN';
                 }
             }
             //botton colison
