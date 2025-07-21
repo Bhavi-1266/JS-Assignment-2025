@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //coins stuff
     let coinCollected =0;
+    NoOfCloudCoins=0;
     let Highscore=0;
 
     if (localStorage.getItem('gameHighScore')) {
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let cameraSpeed=0.3;
     let cameraAcc=0.001;
 
-    let CoinProbability = 0.1; // 10% chance to spawn a coin
+    let CoinProbability = 0.4; // 10% chance to spawn a coin
     let AirCoinProbability = 0.05; // 5% chance to spawn an air coin
 
     //  Loudness setup
@@ -338,6 +339,41 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        let CloudCoinsElements = document.querySelectorAll('.CloudCoin');
+        CloudCoinsElements.forEach((coin, idx) => {
+            // Only check visible coins (not already collected)
+            if (coin.style.visibility === "hidden") return;
+
+            let coinRect = coin.getBoundingClientRect();
+            let playerRect = Player.getBoundingClientRect();
+
+            // Simple AABB collision detection
+            if (
+                playerRect.right > coinRect.left &&
+                playerRect.left < coinRect.right &&
+                playerRect.bottom > coinRect.top &&
+                playerRect.top < coinRect.bottom
+            ) {
+                // Collect the coin
+                coin.style.visibility = "hidden";
+                coinCollected++;
+                score += 10;
+                const scoreDiv = document.getElementById('score');
+                if (scoreDiv) {
+                    scoreDiv.textContent = `Score: ${score}`;
+                    if (score > Highscore) {
+                        Highscore = score;
+                        const highScoreDiv = document.getElementById("highScore");
+                        if (highScoreDiv) {
+                            highScoreDiv.textContent = `High Score : ${Highscore}`;
+                            updateHighScore(score);
+                        }
+                    }
+                }
+                // e.g. document.getElementById('score').innerText = coinCollected;
+            }
+        });
+
     }
 
     function getLastBlockX() {
@@ -372,6 +408,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 Coin.className = `coin`;
                 blockHolder.appendChild(Coin);
             }
+
+           if (Math.random() < 0.1 && NoOfCloudCoins< 10) {
+      const CloudCoin = document.createElement('div');
+      CloudCoin.className = 'CloudCoin';
+      CloudCoin.style.top = `${Math.random() * 200 + 50}px`;
+        CloudCoin.style.left = `${Math.random() * 100}%`;
+      NoOfCloudCoins++;
+      document.body.appendChild(CloudCoin);
+    }
+
             blockHolder.appendChild(block);
             game.appendChild(blockHolder);
             blocks = document.querySelectorAll('.block');

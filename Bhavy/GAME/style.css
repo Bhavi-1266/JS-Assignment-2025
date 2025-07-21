@@ -218,3 +218,16 @@ html {
 }
 
 
+
+.CloudCoin {
+    width: 24px;
+    height: 24px;
+    background: radial-gradient(circle at 30% 30%, #bdd5ec 70%, #e0e0e0 100%);
+    border-radius: 50%;
+    position: fixed;
+    border: 2px solid #b0b0b0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10), 0 0 0 2px #f5f5f5 inset;
+    margin: 10px auto;
+    animation: spin 1.2s linear infinite;   
+    z-index: 5;
+}

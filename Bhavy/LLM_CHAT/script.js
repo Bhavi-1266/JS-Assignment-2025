@@ -55,17 +55,27 @@ class ChatMessage {
     }
 }
 
-async function aiFetch(prompt, model, key) {
-   
-    
-    let aichat = new ChatMessage("ai", "", model);
-        let aiResponse = document.createElement("div");
-        aiResponse.classList.add("chat","AI");
-        aiResponse.style.backgroundColor = "#145f68";
-        aiResponse.innerHTML="Thinking . .. ...";
-        ChatBox.prepend(aiResponse);
+// Helper function to stream text
+async function streamText(element, text, delay = 30) {
+    element.innerHTML = "";
+    let i = 0;
+    while (i < text.length) {
+        // Add next character (or word, if you want word-by-word)
+        element.innerHTML += text[i];
+        i++;
+        await new Promise(res => setTimeout(res, delay));
+    }
+}
 
-    let response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+async function aiFetch(prompt, model, key) {
+    let aichat = new ChatMessage("ai", "", model);
+    let aiResponse = document.createElement("div");
+    aiResponse.classList.add("chat", "AI");
+    aiResponse.style.backgroundColor = "#145f68";
+    aiResponse.innerHTML = "Thinking . .. ...";
+    ChatBox.prepend(aiResponse);
+
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + key,
@@ -78,26 +88,53 @@ async function aiFetch(prompt, model, key) {
                     role: 'user',
                     content: prompt,
                 },
-            ]
-            // stream: true
+            ],
+            stream: true
         })
     });
 
-        
     if (!response.ok) {
-        console.error('API Error:', data);  
-        throw new Error(data.error?.message || ` Failed to fetch AI response`);
+        aiResponse.innerHTML = "API Error";
+        return;
     }
-    let data = await response.json();
-    let message = data.choices[0].message.content;
-    message =  formatMarkdown(message);
 
-    aiResponse.innerHTML= message;
-    aichat.text=message;
+    // Streaming logic
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    let buffer = "";
+    let fullMessage = "";
+
+    while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        let lines = buffer.split('\n');
+        buffer = lines.pop(); 
+
+        for (let line of lines) {
+            line = line.trim();
+            if (line.startsWith("data:")) {
+                let data = line.replace("data:", "").trim();
+                if (data === "[DONE]") continue;
+                try {
+                    let parsed = JSON.parse(data);
+                    let delta = parsed.choices?.[0]?.delta?.content || "";
+                    if (delta) {
+                        fullMessage += delta;
+                        aiResponse.innerHTML = formatMarkdown(fullMessage);
+                    }
+                } catch (e) {
+                    
+                }
+            }
+        }
+    }
+
+    // Save to history
+    aichat.text = formatMarkdown(fullMessage);
     chatHistory.push(aichat);
     localStorage.setItem(localStorageKey, JSON.stringify(chatHistory));
-
-
 }
 
 inputButton.addEventListener("click", () => {
@@ -129,6 +166,7 @@ inputButton.addEventListener("click", () => {
         
 
         aiFetch(prompt, model, apiKey);
+        inputText.value="";
 
         
     }
