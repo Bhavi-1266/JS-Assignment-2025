@@ -462,6 +462,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 xSpeed = 0;
                 ySpeed = 0;
                 isOnGround = 0;
+                coinCollected = 0;
+                score = 0;
+                document.getElementById('score').textContent = `Score: ${score}`;
                 doubleJumpUsed = false;
             }
         });
