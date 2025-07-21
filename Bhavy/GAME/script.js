@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 if (xSpeed>0){
                     xSpeed=xSpeed/1.043;
-                }
+                
                 }
             }
             //botton colison
